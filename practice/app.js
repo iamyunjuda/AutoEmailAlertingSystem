@@ -29,9 +29,7 @@ function build(opts = {}) {
     // app.register(require('./app/routes/route.serverManagement.js'), {
     //     prefix: '/api',
     // });
-    app.register(require('./app/router/practice'), {
-        prefix: '/api',
-    });
+
     app.register(require('./app/router/routeReceiver'), {
         prefix: '/api',
     });
