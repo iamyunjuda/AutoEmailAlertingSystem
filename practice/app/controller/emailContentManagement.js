@@ -24,6 +24,9 @@ const mailSender = {
             },
         });
         // 메일 옵션
+        console.log(param, 'param');
+        console.log(param.toEmail);
+        console.log(param.subject);
         var mailOptions = {
             from: senderEmail.adminEmail, // 보내는 메일의 주소
             to: param.toEmail, // 수신할 이메일
@@ -132,7 +135,7 @@ module.exports = {
             console.log(1);
             const contentId = request.query.id;
 
-            const mailContent = await EmailCollection.find(
+            const mailContent = await EmailCollection.findOne(
                 { _id: contentId },
                 { _id: false, schemaVersion: false, createdDate: false, modifiedDate: false, __v: false }
             );
@@ -140,9 +143,6 @@ module.exports = {
                 { isActivated: true },
                 { _id: false, schemaVersion: false, createdDate: false, modifiedDate: false, __v: false, isActivated: false, name: false }
             );
-
-            console.log(mailContent, 'mailcontent');
-            console.log(receiverList, 'receiverList');
 
             let emailParam = null;
             receiverList.forEach(el => {
@@ -152,10 +152,10 @@ module.exports = {
                     subject: mailContent.subject,
                     text: mailContent.content,
                 };
-            });
-            cron.schedule('*/1 * * * *', () => {
-                mailSender.sendGmail(emailParam);
-                console.log('alert!');
+                cron.schedule('*/1 * * * *', () => {
+                    mailSender.sendGmail(emailParam);
+                    console.log('alert!');
+                });
             });
 
             return await reply.code(200).send({
